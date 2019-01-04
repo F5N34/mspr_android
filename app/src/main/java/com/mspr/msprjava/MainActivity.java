@@ -17,4 +17,26 @@ public class MainActivity extends AppCompatActivity {
         Button signIn = (Button) findViewById( R.id.signIn );
         signIn.setTypeface( tf );
     }
+
+    protected void onStart(){
+        super.onStart();
+        Log.v( "onStart", "Good" );
+    }
+
+    protected void onResume(){
+        super.onResume();
+        Log.v( "onResume", "Good" );
+    }
+
+    protected void onPause(){
+        super.onPause();
+        Log.v( "onPause", "Good" );
+    }
+
+    protected void onStop(){
+        super.onStop();
+        Log.v( "onStop", "Good" );
+    }
+
+
 }
