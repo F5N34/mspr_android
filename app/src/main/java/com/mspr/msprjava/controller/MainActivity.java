@@ -1,10 +1,12 @@
-package com.mspr.msprjava;
+package com.mspr.msprjava.controller;
 
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+
+import com.mspr.msprjava.R;
 
 public class MainActivity extends AppCompatActivity {
 

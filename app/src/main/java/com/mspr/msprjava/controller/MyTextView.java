@@ -1,4 +1,4 @@
-package com.mspr.msprjava;
+package com.mspr.msprjava.controller;
 
 import android.content.Context;
 import android.graphics.Typeface;
