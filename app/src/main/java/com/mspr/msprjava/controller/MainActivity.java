@@ -17,10 +17,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView( R.layout.activity_accueil );
 
         Typeface tf =  Typeface.createFromAsset( getAssets(), "fonts/Roboto-Medium.ttf" );
-        Button signIn = (Button) findViewById( R.id.signIn );
-        signIn.setTypeface( tf );
+/*        Button signIn = (Button) findViewById( R.id.signIn );
+        signIn.setTypeface( tf );*/
         FirebaseApp.initializeApp(this);
-        FirebaseApp.getInstance();
     }
 
     protected void onStart(){
