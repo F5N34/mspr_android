@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
+import com.google.firebase.FirebaseApp;
 import com.mspr.msprjava.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         Typeface tf =  Typeface.createFromAsset( getAssets(), "fonts/Roboto-Medium.ttf" );
         Button signIn = (Button) findViewById( R.id.signIn );
         signIn.setTypeface( tf );
+        FirebaseApp.initializeApp(this);
+        FirebaseApp.getInstance();
     }
 
     protected void onStart(){
