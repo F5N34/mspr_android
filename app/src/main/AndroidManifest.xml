@@ -18,7 +18,7 @@
         </activity>
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="face" />
+            android:value="face, ocr" />
         <!-- To use multiple models: android:value="face,model2,model3" -->
     </application>
 
