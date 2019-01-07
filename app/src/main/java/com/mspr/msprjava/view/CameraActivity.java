@@ -93,7 +93,8 @@ public class CameraActivity extends AppCompatActivity {
         popup.setNegativeButton("Envoyer la photo", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                setContentView(R.layout.activity_accueil);
+                Intent intent = new Intent(CameraActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
         popup.show();
