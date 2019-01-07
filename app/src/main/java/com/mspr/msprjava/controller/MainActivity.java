@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         signIn.setTypeface( tf );
         //createOnClickBtnSignIn();
         FirebaseApp.initializeApp(this);
+        CameraActivity camera = new CameraActivity();
         createOnClickBtnSignIn();
     }
 

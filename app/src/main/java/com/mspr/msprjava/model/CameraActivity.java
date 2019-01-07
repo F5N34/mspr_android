@@ -65,7 +65,7 @@ public class CameraActivity extends AppCompatActivity {
      * @param data
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         // verif du bon code de retour + état du retour
         if(requestCode == 1 && resultCode == RESULT_OK){
@@ -73,7 +73,6 @@ public class CameraActivity extends AppCompatActivity {
             Bitmap image = BitmapFactory.decodeFile(photoPath);
             imagePhoto = (ImageView)findViewById(R.id.coucou);
             imagePhoto.setImageBitmap(image);
-
         }
     }
 }
