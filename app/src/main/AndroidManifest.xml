@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_securi_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".controller.MainActivity">
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +23,7 @@
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="face, ocr" />
         <!-- To use multiple models: android:value="face,model2,model3" -->
-        <activity android:name=".model.CameraActivity"></activity>
+        <activity android:name=".view.CameraActivity"></activity>
         <provider
             android:authorities="${applicationId}.provider"
             android:name="android.support.v4.content.FileProvider"

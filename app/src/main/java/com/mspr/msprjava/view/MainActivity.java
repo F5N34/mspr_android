@@ -1,4 +1,4 @@
-package com.mspr.msprjava.controller;
+package com.mspr.msprjava.view;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -11,7 +11,6 @@ import android.widget.ImageView;
 
 import com.google.firebase.FirebaseApp;
 import com.mspr.msprjava.R;
-import com.mspr.msprjava.model.CameraActivity;
 
 public class MainActivity extends AppCompatActivity {
     private Button signIn;
@@ -26,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         signIn.setTypeface( tf );
         //createOnClickBtnSignIn();
         FirebaseApp.initializeApp(this);
-        CameraActivity camera = new CameraActivity();
         createOnClickBtnSignIn();
     }
 

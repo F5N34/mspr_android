@@ -1,5 +1,6 @@
-package com.mspr.msprjava.model;
+package com.mspr.msprjava.view;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,15 +8,15 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
 
 import com.mspr.msprjava.R;
-import com.mspr.msprjava.controller.MainActivity;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,6 +25,7 @@ import java.util.Date;
 public class CameraActivity extends AppCompatActivity {
     private String photoPath = null;
     ImageView imagePhoto;
+    Button retakePicture;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,8 +73,29 @@ public class CameraActivity extends AppCompatActivity {
         if(requestCode == 1 && resultCode == RESULT_OK){
             //récupération de l'image
             Bitmap image = BitmapFactory.decodeFile(photoPath);
-            imagePhoto = (ImageView)findViewById(R.id.coucou);
+            imagePhoto = (ImageView)findViewById(R.id.picture);
             imagePhoto.setImageBitmap(image);
+            startPopup();
         }
+    }
+
+    private void startPopup() {
+        AlertDialog.Builder popup = new AlertDialog.Builder(this);
+        popup.setTitle("Photo");
+        popup.setMessage("Voulez vous reprendre la photo ?");
+        popup.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                takePicture();
+            }
+        });
+
+        popup.setNegativeButton("Envoyer la photo", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setContentView(R.layout.activity_accueil);
+            }
+        });
+        popup.show();
     }
 }
