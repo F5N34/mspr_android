@@ -16,6 +16,8 @@ import android.widget.ImageView;
 
 import java.io.File;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.mspr.msprjava.R;
 
 import java.io.IOException;
@@ -26,6 +28,7 @@ public class CameraActivity extends AppCompatActivity {
     private String photoPath = null;
     ImageView imagePhoto;
     Button retakePicture;
+    private StorageReference mStorageRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
