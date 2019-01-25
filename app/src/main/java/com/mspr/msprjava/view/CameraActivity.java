@@ -11,11 +11,17 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.mspr.msprjava.R;
 
 import java.io.IOException;
@@ -26,24 +32,29 @@ public class CameraActivity extends AppCompatActivity {
     private String photoPath = null;
     ImageView imagePhoto;
     Button retakePicture;
+    private StorageReference mStorageRef;
+    private File photoFile;
+    private String time;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         takePicture();
+
     }
 
-    private void takePicture(){
+    public void takePicture(){
         //créer une fenêtre pour prendre une photo
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         //test
         if(intent.resolveActivity(getPackageManager()) != null){
             // création d'un nom pour la photo prise
-            String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File photoDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try {
-                File photoFile = File.createTempFile("photo_"+time, ".jpg", photoDir);
+                photoFile = File.createTempFile("photo_"+time, ".jpg", photoDir);
                 //Enregistrer le chemin complet
                 photoPath = photoFile.getAbsolutePath();
                 //creation URI
@@ -56,6 +67,9 @@ public class CameraActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        else{
+            Log.v("coucuo", "marche aps");
         }
 
     }
@@ -76,11 +90,12 @@ public class CameraActivity extends AppCompatActivity {
             imagePhoto = (ImageView)findViewById(R.id.picture);
             imagePhoto.setImageBitmap(image);
             startPopup();
+
         }
     }
 
-    private void startPopup() {
-        AlertDialog.Builder popup = new AlertDialog.Builder(this);
+    public void startPopup() {
+        final AlertDialog.Builder popup = new AlertDialog.Builder(this);
         popup.setTitle("Photo");
         popup.setMessage("Voulez vous reprendre la photo ?");
         popup.setPositiveButton("Oui", new DialogInterface.OnClickListener() {
@@ -93,9 +108,30 @@ public class CameraActivity extends AppCompatActivity {
         popup.setNegativeButton("Envoyer la photo", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                setContentView(R.layout.activity_accueil);
+                sendPicture();
+                //setContentView(R.layout.activity_accueil);
             }
         });
         popup.show();
+    }
+
+    public void sendPicture() {
+        Uri file = Uri.fromFile(new File(photoPath));
+        StorageReference riversRef = mStorageRef.child("pictures/photo_"+time+".jpg");
+        riversRef.putFile(file)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // Get a URL to the uploaded content
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception exception) {
+                        // Handle unsuccessful uploads
+                        // ...
+                    }
+                });
     }
 }
