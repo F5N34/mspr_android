@@ -24,7 +24,7 @@
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="face, ocr" />
+            android:value="ocr" />
         <!-- To use multiple models: android:value="face,model2,model3" -->
         <activity android:name=".view.CameraActivity"></activity>
         <provider

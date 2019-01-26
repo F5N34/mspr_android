@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,11 +16,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.document.FirebaseVisionDocumentText;
+import com.google.firebase.ml.vision.text.FirebaseVisionText;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.firebase.ml.vision.text.RecognizedLanguage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -27,14 +38,19 @@ import com.mspr.msprjava.R;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class CameraActivity extends AppCompatActivity {
     private String photoPath = null;
     ImageView imagePhoto;
+    TextView textRecognize;
     Button retakePicture;
     private StorageReference mStorageRef;
     private File photoFile;
     private String time;
+    Bitmap image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,9 +102,9 @@ public class CameraActivity extends AppCompatActivity {
         // verif du bon code de retour + état du retour
         if(requestCode == 1 && resultCode == RESULT_OK){
             //récupération de l'image
-            Bitmap image = BitmapFactory.decodeFile(photoPath);
-            imagePhoto = (ImageView)findViewById(R.id.picture);
-            imagePhoto.setImageBitmap(image);
+            this.image = BitmapFactory.decodeFile(photoPath);
+//            imagePhoto = (ImageView)findViewById(R.id.picture);
+//            imagePhoto.setImageBitmap(image);
             startPopup();
 
         }
@@ -109,6 +125,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 sendPicture();
+                runRecognizeText();
                 //setContentView(R.layout.activity_accueil);
             }
         });
@@ -117,21 +134,64 @@ public class CameraActivity extends AppCompatActivity {
 
     public void sendPicture() {
         Uri file = Uri.fromFile(new File(photoPath));
-        StorageReference riversRef = mStorageRef.child("pictures/photo_"+time+".jpg");
+        StorageReference riversRef = mStorageRef.child("photo_"+time+".jpg");
         riversRef.putFile(file)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // Get a URL to the uploaded content
+                        Toast.makeText(getApplicationContext(), "La photo c'est bien envoyée", Toast.LENGTH_SHORT).show();
 
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(Exception exception) {
-                        // Handle unsuccessful uploads
-                        // ...
+                    public void onFailure(@NonNull Exception ex) {
+                        Toast.makeText(getApplicationContext(), "Erreur, veuillez réessayer", Toast.LENGTH_SHORT).show();
                     }
+
                 });
+    }
+
+    public void runRecognizeText() {
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(this.image);
+        FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
+                .getOnDeviceTextRecognizer();
+                detector.processImage(image)
+                        .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+                            @Override
+                            public void onSuccess(FirebaseVisionText texts) {
+                                recognizeText(texts);
+                            }
+                        })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.v("MARCHE PAS", "TOZ");
+                                    }
+                                });
+
+    }
+
+    public void recognizeText(FirebaseVisionText texts) {
+        List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
+        if(blocks.size() == 0){
+            Toast.makeText(getApplicationContext(), "Erreur", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        for (FirebaseVisionText.TextBlock block : texts.getTextBlocks()) {
+            String txt = block.getText();
+            textRecognize = (TextView)findViewById(R.id.textReco);
+            textRecognize.setText(txt);
+        }
+//        for (int i = 0; i < blocks.size(); i++) {
+//            List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
+//            for (int j = 0; j < lines.size(); j++) {
+//                List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
+//                textRecognize = (TextView)findViewById(R.id.textReco);
+//
+//                Log.v("te", "tes");
+//            }
+//        }
     }
 }
