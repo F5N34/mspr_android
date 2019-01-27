@@ -84,10 +84,6 @@ public class CameraActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        else{
-            Log.v("coucuo", "marche aps");
-        }
-
     }
 
     /**
@@ -125,7 +121,6 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 sendPicture();
-                runRecognizeText();
                 //setContentView(R.layout.activity_accueil);
             }
         });
@@ -140,7 +135,7 @@ public class CameraActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(getApplicationContext(), "La photo c'est bien envoyée", Toast.LENGTH_SHORT).show();
-
+                        runRecognizeText();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -167,7 +162,7 @@ public class CameraActivity extends AppCompatActivity {
                                 new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Log.v("MARCHE PAS", "TOZ");
+                                        Toast.makeText(getApplicationContext(), "Erreur", Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -179,19 +174,42 @@ public class CameraActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Erreur", Toast.LENGTH_SHORT).show();
             return;
         }
+
         for (FirebaseVisionText.TextBlock block : texts.getTextBlocks()) {
             String txt = block.getText();
             textRecognize = (TextView)findViewById(R.id.textReco);
             textRecognize.setText(txt);
         }
-//        for (int i = 0; i < blocks.size(); i++) {
-//            List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
-//            for (int j = 0; j < lines.size(); j++) {
-//                List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
-//                textRecognize = (TextView)findViewById(R.id.textReco);
-//
-//                Log.v("te", "tes");
-//            }
-//        }
+
+/*        for (int i = 0; i < blocks.size(); i++) {
+            List<FirebaseVisionText.Line> lines = blocks.get(i).getLines();
+            for (int j = 0; j < lines.size(); j++) {
+                List<FirebaseVisionText.Element> elements = lines.get(j).getElements();
+                Log.v("te", "tes");
+            }
+        }*/
+
+/*        String resultText = texts.getText();
+        for (FirebaseVisionText.TextBlock block: texts.getTextBlocks()) {
+            String blockText = block.getText();
+            Float blockConfidence = block.getConfidence();
+            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
+            Point[] blockCornerPoints = block.getCornerPoints();
+            Rect blockFrame = block.getBoundingBox();
+            for (FirebaseVisionText.Line line: block.getLines()) {
+                String lineText = line.getText();
+                Float lineConfidence = line.getConfidence();
+                List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
+                Point[] lineCornerPoints = line.getCornerPoints();
+                Rect lineFrame = line.getBoundingBox();
+                for (FirebaseVisionText.Element element: line.getElements()) {
+                    String elementText = element.getText();
+                    Float elementConfidence = element.getConfidence();
+                    List<RecognizedLanguage> elementLanguages = element.getRecognizedLanguages();
+                    Point[] elementCornerPoints = element.getCornerPoints();
+                    Rect elementFrame = element.getBoundingBox();
+                }
+            }
+        }*/
     }
 }
